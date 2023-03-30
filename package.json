@@ -15,7 +15,11 @@
         "axios": "^0.21",
         "husky": "^8.0.3",
         "laravel-mix": "^6.0.6",
+        "lint-staged": "^13.2.0",
         "lodash": "^4.17.19",
         "postcss": "^8.1.14"
+    },
+    "lint-staged": {
+        "*.php": "./vendor/bin/phpcbf --standard=psr12 -p app/ config/ routes/ tests/"
     }
 }
