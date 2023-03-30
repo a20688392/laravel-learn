@@ -112,3 +112,8 @@ yarn add -D lint-staged
   }
 }
 ```
+#### 依據規定找出錯誤
+![image](/docs/lint-error.png)
+
+#### 依據規定找出各開發者的錯誤
+![image](/docs/ci-report.png)
