@@ -50,11 +50,15 @@
         "post-create-project-cmd": [
             "@php artisan key:generate --ansi"
         ],
+        "post-install-cmd": [
+            "phpcs --config-set colors 1",
+            "phpcs --config-set default_standard PSR12"
+        ],
         "lint": [
-            "phpcs --standard=psr12 app/ config/ routes/  tests/"
+            "phpcs --standard=psr12 -p app/ config/ routes/ tests/"
         ],
         "lint:save": [
-            "phpcbf --standard=psr12 app/ config/ routes/ tests/"
+            "phpcbf --standard=psr12 -p app/ config/ routes/ tests/"
         ]
     },
     "extra": {
