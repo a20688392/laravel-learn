@@ -59,6 +59,9 @@
         ],
         "lint:save": [
             "phpcbf --standard=psr12 -p app/ config/ routes/ tests/"
+        ],
+        "lint:report": [
+            "phpcs --standard=psr12 -p -s --report=gitblame app/ config/ routes/ tests/"
         ]
     },
     "extra": {
