@@ -112,7 +112,7 @@ npx husky add .husky/pre-commit "npx lint-staged"
 {
   //..
   "lint-staged": {
-    "*.php": "./vendor/bin/phpcbf --standard=psr12 -p app/ config/ routes/ tests/"
+    "{app, config, routes, tests}/**/*.php": "composer lint"
   }
 }
 ```
