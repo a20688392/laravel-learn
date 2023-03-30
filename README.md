@@ -101,6 +101,10 @@ composer require "squizlabs/php_codesniffer=*" --dev
 ```bash=
 yarn add -D lint-staged
 ```
+#### 寫入husky git hook
+```bash=
+npx husky add .husky/pre-commit "npx lint-staged"
+```
 #### 設定進 pre-commit
 > 設定 phpcbf 修理、PSR12、顯示進度、範圍(app/ config/ routes/ tests/)
 ```bash=
