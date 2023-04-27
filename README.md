@@ -1,64 +1,123 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+# Coding style
+### [使用文章](https://www.techiediaries.com/git-hooks-husky-commitlint/)
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## git commit 檢查
+### husky
+https://github.com/typicode/husky
 
-## About Laravel
+幫助我們處理git hook時，自動處理我們所寫的規則~!
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+### yarn npm 選一個用
+```bash=
+yarn add husky -D
+or
+npm install husky --save-dev
+```
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### 安裝檢查commit套件庫與預設模板
+```bash=
+yarn add @commitlint/cli @commitlint/config-conventional  -D
+or
+npm install @commitlint/cli @commitlint/config-conventional  --save-dev
+```
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+#### 啟動掛勾
+```bash=
+npx husky install
+```
 
-## Learning Laravel
+### git hook
+可以參考文章~ 關於 [git hook](https://git-scm.com/book/zh/v2/%E8%87%AA%E5%AE%9A%E4%B9%89-Git-Git-%E9%92%A9%E5%AD%90)
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+#### 設定進 commit-msg
+```bash=
+npx husky add .husky/commit-msg 'npx commitlint --edit $1'
+```
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### 創建預設模板設定
+```bash=
+#在根目錄新增
+commitlint.config.js
+#裡面加入
+module.exports = {
+  extends: ['@commitlint/config-conventional'],
+};
+```
+#### 錯誤版本
+![image](/docs/commit-error.png)
 
-## Laravel Sponsors
+#### 依據規定版本
+![image](/docs/commit-access.png)
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+---
 
-### Premium Partners
+## 程式碼檢測
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
 
-## Contributing
+### 安裝 php_codesniffer
+```bash=
+composer require "squizlabs/php_codesniffer=*" --dev
+```
+#### 新增在 composer install 後初始化檢查設定
+#### [關於 composer scripts](https://docs.phpcomposer.com/articles/scripts.html)
+#### [關於 phpcs/phpcbf 設定](https://clouding.city/php/phpcs-phpcbf/)
+```bash=
+//composer.json
+"scripts": {
+  //..
+  // 設定顏色顯示
+  // 設定規範為 PSR12
+  "post-install-cmd": [
+    "phpcs --config-set colors 1",
+    "phpcs --config-set default_standard PSR12"
+  ],
+}
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+#### 新增自訂指令可以自己檢查
+```bash=
+//composer.json
+"scripts": {
+  //..
+  // phpcs 為檢查
+  // phpcbf 為修理
+  // 檢查為 PSR12 (--standard=psr12)
+  // 顯示進度 (-p)
+  // 設定檢查範圍 (app/ config/ routes/ tests/)
+  "lint": [
+    "phpcs --standard=psr12 -p app/ config/ routes/ tests/"
+  ],
+  "lint:save": [
+    "phpcbf --standard=psr12 -p app/ config/ routes/ tests/"
+  ]
+}
+```
 
-## Code of Conduct
+### lint-staged 只會處理 git staged 中的程式碼
+#### 新增在 git commit 前檢查並修理
+>但是不會 commit 進 git staged 內
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+#### 安裝 lint-staged
+```bash=
+yarn add -D lint-staged
+```
+#### 寫入husky git hook
+```bash=
+npx husky add .husky/pre-commit "npx lint-staged"
+```
+#### 設定進 pre-commit
+> 設定 phpcbf 修理、PSR12、顯示進度、範圍(app/ config/ routes/ tests/)
+```bash=
+// package.json
+{
+  //..
+  "lint-staged": {
+    "{app, config, routes, tests}/**/*.php": "composer lint"
+  }
+}
+```
+#### 依據規定找出錯誤
+![image](/docs/lint-error.png)
 
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+#### 依據規定找出各開發者的錯誤
+![image](/docs/ci-report.png)
