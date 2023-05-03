@@ -25,6 +25,7 @@ class UserController extends Controller
         $messages = [
             'email.required' => 'email 必填',
             'email.email' => '格式必須符合 email 格式',
+            'email.unique' => '信箱已被註冊',
             'password.required' => 'password 必填',
         ];
 
@@ -33,7 +34,7 @@ class UserController extends Controller
         if ($validator->fails()) {
             $httpStatus = 401;
             $reposeData = [
-                'message' => '登入失敗',
+                'message' => '註冊失敗',
                 'errors' => $validator->errors()
             ];
             return response()->json(
