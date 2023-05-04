@@ -2,53 +2,25 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UserLogin;
+use App\Http\Requests\UserRegister;
 use App\Models\User;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
     /**
      * 使用者註冊
      *
-     * @param  Request  $request
+     * @param  UserRegister  $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function register(Request $request)
+    public function register(UserRegister $request)
     {
         $reposeData = [
             'status' => 200,
             'message' => '創建成功',
         ];
-
-        $rules = [
-            'name' => 'required',
-            'email' => ['required', 'string', 'email', 'unique:users'],
-            'password' => ['required', 'string', 'min:6', 'max:12', 'confirmed'],
-        ];
-
-        $messages = [
-            'email.required' => 'email 必填',
-            'email.email' => '格式必須符合 email 格式',
-            'email.unique' => '信箱已被註冊',
-            'password.required' => 'password 必填',
-            'password.confirmed' => '與密碼驗證不符'
-        ];
-
-        $validator = Validator::make($request->all(), $rules, $messages);
-        // 將錯誤訊息以 JSON 格式印出
-        if ($validator->fails()) {
-            $httpStatus = 401;
-            $reposeData = [
-                'message' => '註冊失敗',
-                'errors' => $validator->errors()
-            ];
-            return response()->json(
-                $reposeData,
-                $httpStatus
-            );
-        }
         User::create([
             'name' => $request->name,
             'email' => $request->email,
@@ -62,35 +34,11 @@ class UserController extends Controller
 
     /**
      * 使用者登入
-     * @param Request $request
+     * @param UserLogin $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function login(Request $request)
+    public function login(UserLogin $request)
     {
-        $rules = [
-            'email' => ['required', 'string', 'email'],
-            'password' => ['required', 'string']
-        ];
-
-        $messages  = [
-            'email.required' => 'email 必填',
-            'email.email' => '格式必須符合 email 格式',
-            'password.required' => 'password 必填',
-        ];
-
-        $validator  = Validator::make($request->all(), $rules, $messages);
-        if ($validator->fails()) {
-            $httpStatus = 401;
-            $reposeData = [
-                'message' => '登入失敗',
-                'errors' => $validator->errors()
-            ];
-            return response()->json(
-                $reposeData,
-                $httpStatus
-            );
-        }
-
         $attempt =  User::where('email', $request->email)->first();
         if ($attempt && Hash::check($request->password, $attempt->password)) {
             $httpStatus = 200;
