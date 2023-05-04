@@ -9,6 +9,12 @@ use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
+    /**
+     * 使用者註冊
+     *
+     * @param  Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function register(Request $request)
     {
         $reposeData = [
@@ -27,6 +33,7 @@ class UserController extends Controller
             'email.email' => '格式必須符合 email 格式',
             'email.unique' => '信箱已被註冊',
             'password.required' => 'password 必填',
+            'password.confirmed' => '與密碼驗證不符'
         ];
 
         $validator = Validator::make($request->all(), $rules, $messages);
