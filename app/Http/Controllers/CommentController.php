@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Comment\CommentCreate;
+use App\Http\Requests\Comment\CommentUpdate;
 use App\Models\Comment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -72,37 +74,11 @@ class CommentController extends Controller
     /**
      * 創建新留言
      *
-     * @param  Request  $request
+     * @param  CommentCreate  $request
      * @return \Illuminate\Http\Response
      */
-    public function createComment(Request $request)
+    public function createComment(CommentCreate $request)
     {
-        // 驗證 client 端輸入
-        $rules = [
-            'title' => ['required', 'string', 'max:10'],
-            'description' => ['required', 'string'],
-        ];
-        //更改默認 錯誤訊息
-        $messages = [
-            'title.required' => 'title 必填',
-            'description.required' => 'description 必填'
-        ];
-        $validator = Validator::make($request->all(), $rules, $messages);
-        // 將錯誤訊息以 JSON 格式印出
-        if ($validator->fails()) {
-            $httpStatus = Response::HTTP_BAD_REQUEST;
-            $repose_data = [
-                'statusCode' => $httpStatus,
-                'message' => '創建失敗',
-                'errors' => $validator->errors()
-            ];
-
-            return response()->json(
-                $repose_data,
-                $httpStatus
-            );
-        }
-
         // 為了合併系統自動安排的值，先將之前的 request 值存在 $data 內
         $data = $request->all();
 
@@ -124,36 +100,11 @@ class CommentController extends Controller
     /**
      * 更新留言
      *
-     * @param  Request  $request
+     * @param  CommentUpdate  $request
      * @return \Illuminate\Http\Response
      */
-    public function updateComment(Request $request, $id)
+    public function updateComment(CommentUpdate $request, $id)
     {
-        // 驗證 client 端輸入
-        $rules = [
-            'title' => ['nullable', 'string', 'max:10'],
-            'description' => ['nullable', 'string'],
-        ];
-        //更改默認 錯誤訊息
-        $messages = [
-            'title.required' => 'title 必填',
-            'title.max' => 'title 只能十個字',
-        ];
-        $validator = Validator::make($request->all(), $rules, $messages);
-        // 將錯誤訊息以 JSON 格式印出
-        if ($validator->fails()) {
-            $httpStatus = Response::HTTP_BAD_REQUEST;
-            $repose_data = [
-                'statusCode' => $httpStatus,
-                'message' => '創建失敗',
-                'errors' => $validator->errors()
-            ];
-
-            return response()->json(
-                $repose_data,
-                $httpStatus
-            );
-        }
         $comment = Comment::find($id);
         if (is_null($comment)) {
             $httpStatus = Response::HTTP_NOT_FOUND;

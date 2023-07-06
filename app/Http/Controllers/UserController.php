@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\User\UserLogin;
+use App\Http\Requests\User\UserRegister;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
@@ -13,41 +15,11 @@ class UserController extends Controller
     /**
      * 使用者註冊
      *
-     * @param  Request  $request
+     * @param  UserRegister  $request
      * @return \Illuminate\Http\Response
      */
-    public function register(Request $request)
+    public function register(UserRegister $request)
     {
-        // 驗證 client 端輸入
-        $rules = [
-            'name' => ['required', 'string', 'min:2', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:6', 'max:12', 'confirmed'],
-        ];
-        //更改默認 錯誤訊息
-        $messages = [
-            'name.required' => 'name 必填',
-            'email.required' => 'email 必填',
-            'email.email' => '格式必須符合 email 格式',
-            'email.unique' => '信箱已被註冊',
-            'password.required' => 'password 必填',
-            'password.confirmed' => '與密碼驗證不符'
-        ];
-        $validator = Validator::make($request->all(), $rules, $messages);
-        // 將錯誤訊息以 JSON 格式印出
-        if ($validator->fails()) {
-            $httpStatus = Response::HTTP_BAD_REQUEST;
-            $reposeData = [
-                'statusCode' => $httpStatus,
-                'message' => '登入失敗',
-                'errors' => $validator->errors()
-            ];
-            return response()->json(
-                $reposeData,
-                $httpStatus
-            );
-        }
-
         // 為了合併系統自動安排的值，先將之前的 request 值存在 $data 內
         $data = $request->all();
         // 預設值插入
@@ -71,36 +43,11 @@ class UserController extends Controller
 
     /**
      * 使用者登入
-     * @param Request $request
+     * @param UserLogin $request
      * @return \Illuminate\Http\Response
      */
-    public function login(Request $request)
+    public function login(UserLogin $request)
     {
-        // 驗證 client 端輸入
-        $rules = [
-            'email' => ['required', 'string', 'email', 'max:255'],
-            'password' => ['required', 'string', 'min:6', 'max:12'],
-        ];
-        //更改默認 錯誤訊息
-        $messages = [
-            'email.required' => 'email 必填',
-            'email.email' => '格式必須符合 email 格式',
-            'password.required' => 'password 必填',
-        ];
-        $validator = Validator::make($request->all(), $rules, $messages);
-        // 將錯誤訊息以 JSON 格式印出
-        if ($validator->fails()) {
-            $httpStatus = Response::HTTP_BAD_REQUEST;
-            $reposeData = [
-                'statusCode' => $httpStatus,
-                'message' => '登入失敗',
-                'errors' => $validator->errors()
-            ];
-            return response()->json(
-                $reposeData,
-                $httpStatus
-            );
-        }
         $attempt =  User::where('email', $request->email)->first();
         if ($attempt && Hash::check($request->password, $attempt->password)) {
             $httpStatus = Response::HTTP_OK;
