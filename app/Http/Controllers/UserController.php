@@ -57,4 +57,50 @@ class UserController extends Controller
             200,
         );
     }
+
+    /**
+     * 使用者登入
+     * @param Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function login(Request $request)
+    {
+        // 驗證 client 端輸入
+        $rules = [
+            'email' => ['required', 'string', 'email', 'max:255'],
+            'password' => ['required', 'string', 'min:6', 'max:12'],
+        ];
+        //更改默認 錯誤訊息
+        $messages = [
+            'email.required' => 'email 必填',
+            'email.email' => '格式必須符合 email 格式',
+            'password.required' => 'password 必填',
+        ];
+        $validator = Validator::make($request->all(), $rules, $messages);
+        // 將錯誤訊息以 JSON 格式印出
+        if ($validator->fails()) {
+            return response(['message' => $validator->errors()]);
+        }
+        $attempt =  User::where('email', $request->email)->first();
+        if ($attempt && Hash::check($request->password, $attempt->password)) {
+            $httpStatus = 200;
+            $reposeData = [
+                'message' => '登入成功',
+                "name" => $attempt->name
+            ];
+        } else {
+            $httpStatus = 401;
+            $reposeData = [
+                'message' => '登入失敗',
+                "errors" => [
+                    "auth" => "帳號或密碼錯誤"
+                ]
+            ];
+        }
+
+        return response()->json(
+            $reposeData,
+            $httpStatus
+        );
+    }
 }
