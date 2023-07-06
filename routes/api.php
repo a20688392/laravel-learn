@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -21,3 +22,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::post('users/register', [UserController::class, "register"]);
 Route::post('users/login', [UserController::class, "login"]);
+Route::get('comments', [CommentController::class, "getAll"]);
+Route::get('comments/{id}', [CommentController::class, "getOne"]);
+Route::post('comments', [CommentController::class, "createComment"]);
+Route::patch('comments/{id}', [CommentController::class, "updateComment"]);
+Route::delete('comments/{id}', [CommentController::class, "deleteComment"]);

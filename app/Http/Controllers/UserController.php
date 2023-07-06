@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Symfony\Component\HttpFoundation\Response;
 
 class UserController extends Controller
 {
@@ -47,14 +48,14 @@ class UserController extends Controller
         $user = User::create($data);
 
         $reposeData = [
-            'status' => 200,
+            'statusCode' => Response::HTTP_OK,
             'message' => '創建成功',
             'userData' => $user
         ];
 
         return response()->json(
             $reposeData,
-            200,
+            Response::HTTP_OK,
         );
     }
 
@@ -83,13 +84,13 @@ class UserController extends Controller
         }
         $attempt =  User::where('email', $request->email)->first();
         if ($attempt && Hash::check($request->password, $attempt->password)) {
-            $httpStatus = 200;
+            $httpStatus = Response::HTTP_OK;
             $reposeData = [
                 'message' => '登入成功',
                 "name" => $attempt->name
             ];
         } else {
-            $httpStatus = 401;
+            $httpStatus = Response::HTTP_NOT_FOUND;
             $reposeData = [
                 'message' => '登入失敗',
                 "errors" => [
