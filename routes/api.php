@@ -20,10 +20,15 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('users/register', [UserController::class, "register"]);
-Route::post('users/login', [UserController::class, "login"]);
-Route::get('comments', [CommentController::class, "getAll"]);
-Route::get('comments/{id}', [CommentController::class, "getOne"]);
-Route::post('comments', [CommentController::class, "createComment"]);
-Route::patch('comments/{id}', [CommentController::class, "updateComment"]);
-Route::delete('comments/{id}', [CommentController::class, "deleteComment"]);
+
+Route::prefix('users')->group(function () {
+    Route::post('/register', [UserController::class, "register"]);
+    Route::post('/login', [UserController::class, "login"]);
+});
+Route::prefix('comments')->group(function () {
+    Route::get('/', [CommentController::class, "getAll"]);
+    Route::get('/{id}', [CommentController::class, "getOne"]);
+    Route::post('/', [CommentController::class, "createComment"]);
+    Route::patch('/{id}', [CommentController::class, "updateComment"]);
+    Route::delete('/{id}', [CommentController::class, "deleteComment"]);
+});
