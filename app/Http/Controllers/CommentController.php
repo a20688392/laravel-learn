@@ -20,15 +20,16 @@ class CommentController extends Controller
         // 將存入 $data 的值插入，新增使用者
         $comments = Comment::all();
 
+        $httpStatus = Response::HTTP_OK;
         $reposeData = [
-            'statusCode' => Response::HTTP_OK,
+            'statusCode' => $httpStatus,
             'message' => '所有留言搜尋成功',
             'userData' => $comments
         ];
 
         return response()->json(
             $reposeData,
-            Response::HTTP_OK,
+            $httpStatus
         );
     }
     /**
@@ -42,8 +43,9 @@ class CommentController extends Controller
         // 將存入 $data 的值插入，新增使用者
         $comments = Comment::find($id);
         if (is_null($comments)) {
+            $httpStatus = Response::HTTP_NOT_FOUND;
             $repose_data = [
-                'statusCode' => Response::HTTP_NOT_FOUND,
+                'statusCode' => $httpStatus,
                 'message' => '取得失敗',
                 'errors' => [
                     "comment" => '單一留言搜尋失敗'
@@ -52,19 +54,19 @@ class CommentController extends Controller
 
             return response()->json(
                 $repose_data,
-                Response::HTTP_NOT_FOUND
+                $httpStatus
             );
         }
-
+        $httpStatus = Response::HTTP_NOT_FOUND;
         $reposeData = [
-            'statusCode' => Response::HTTP_NOT_FOUND,
+            'statusCode' => $httpStatus,
             'message' => '單一留言搜尋成功',
             'userData' => $comments
         ];
 
         return response()->json(
             $reposeData,
-            Response::HTTP_NOT_FOUND
+            $httpStatus
         );
     }
     /**
@@ -88,15 +90,16 @@ class CommentController extends Controller
         $validator = Validator::make($request->all(), $rules, $messages);
         // 將錯誤訊息以 JSON 格式印出
         if ($validator->fails()) {
+            $httpStatus = Response::HTTP_BAD_REQUEST;
             $repose_data = [
-                'statusCode' => Response::HTTP_NOT_FOUND,
+                'statusCode' => $httpStatus,
                 'message' => '創建失敗',
                 'errors' => $validator->errors()
             ];
 
             return response()->json(
                 $repose_data,
-                Response::HTTP_NOT_FOUND
+                $httpStatus
             );
         }
 
@@ -106,15 +109,16 @@ class CommentController extends Controller
         // 將存入 $data 的值插入，新增使用者
         $comment = Comment::create($data);
 
+        $httpStatus = Response::HTTP_OK;
         $reposeData = [
-            'statusCode' => Response::HTTP_OK,
+            'statusCode' => $httpStatus,
             'message' => '創建成功',
             'commentData' => $comment
         ];
 
         return response()->json(
             $reposeData,
-            Response::HTTP_OK,
+            $httpStatus
         );
     }
     /**
@@ -138,21 +142,23 @@ class CommentController extends Controller
         $validator = Validator::make($request->all(), $rules, $messages);
         // 將錯誤訊息以 JSON 格式印出
         if ($validator->fails()) {
+            $httpStatus = Response::HTTP_BAD_REQUEST;
             $repose_data = [
-                'statusCode' => Response::HTTP_NOT_FOUND,
+                'statusCode' => $httpStatus,
                 'message' => '創建失敗',
                 'errors' => $validator->errors()
             ];
 
             return response()->json(
                 $repose_data,
-                Response::HTTP_NOT_FOUND
+                $httpStatus
             );
         }
         $comment = Comment::find($id);
         if (is_null($comment)) {
+            $httpStatus = Response::HTTP_NOT_FOUND;
             $repose_data = [
-                'statusCode' => Response::HTTP_NOT_FOUND,
+                'statusCode' => $httpStatus,
                 'message' => '取得失敗',
                 'errors' => [
                     "comment" => [
@@ -163,7 +169,7 @@ class CommentController extends Controller
 
             return response()->json(
                 $repose_data,
-                Response::HTTP_NOT_FOUND
+                $httpStatus
             );
         }
         $input = ['title', 'description'];
@@ -175,15 +181,16 @@ class CommentController extends Controller
 
         $comment->save();
 
+        $httpStatus = Response::HTTP_OK;
         $reposeData = [
-            'statusCode' => Response::HTTP_OK,
+            'statusCode' => $httpStatus,
             'message' => '創建成功',
             'commentData' => $comment,
         ];
 
         return response()->json(
             $reposeData,
-            Response::HTTP_OK,
+            $httpStatus
         );
     }
     /**
@@ -195,8 +202,9 @@ class CommentController extends Controller
     public function deleteComment($id)
     {
         if (!is_numeric($id)) {
+            $httpStatus = Response::HTTP_BAD_REQUEST;
             $repose_data = [
-                'statusCode' => Response::HTTP_NOT_FOUND,
+                'statusCode' => $httpStatus,
                 'message' => '取得失敗',
                 'errors' => [
                     "id" => [
@@ -207,13 +215,14 @@ class CommentController extends Controller
 
             return response()->json(
                 $repose_data,
-                Response::HTTP_NOT_FOUND
+                $httpStatus
             );
         }
         $comment = Comment::find($id);
         if (is_null($comment)) {
+            $httpStatus = Response::HTTP_NOT_FOUND;
             $repose_data = [
-                'statusCode' => Response::HTTP_NOT_FOUND,
+                'statusCode' => $httpStatus,
                 'message' => '取得失敗',
                 'errors' => [
                     "comment" => [
@@ -224,20 +233,21 @@ class CommentController extends Controller
 
             return response()->json(
                 $repose_data,
-                Response::HTTP_NOT_FOUND
+                $httpStatus
             );
         }
         $comment->delete();
 
+        $httpStatus = Response::HTTP_OK;
         $reposeData = [
-            'statusCode' => Response::HTTP_OK,
+            'statusCode' => $httpStatus,
             'message' => '刪除成功',
             'commentData' => $comment,
         ];
 
         return response()->json(
             $reposeData,
-            Response::HTTP_OK,
+            $httpStatus
         );
     }
 }
