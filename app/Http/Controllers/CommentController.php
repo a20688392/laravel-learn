@@ -5,16 +5,13 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Comment\CommentCreate;
 use App\Http\Requests\Comment\CommentUpdate;
 use App\Models\Comment;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpFoundation\Response;
 
 class CommentController extends Controller
 {
     /**
-     * 所有留言獲取
+     * 獲取所有留言
      *
-     * @param  Request  $request
      * @return \Illuminate\Http\Response
      */
     public function getAll()
@@ -25,8 +22,8 @@ class CommentController extends Controller
         $httpStatus = Response::HTTP_OK;
         $reposeData = [
             'statusCode' => $httpStatus,
-            'message' => '所有留言搜尋成功',
-            'userData' => $comments
+            'message' => '獲取所有留言成功',
+            'allComments' => $comments
         ];
 
         return response()->json(
@@ -35,14 +32,14 @@ class CommentController extends Controller
         );
     }
     /**
-     * 所有留言獲取
+     * 獲取單一留言
      *
-     * @param  Request  $request
+     * @param  int  $id 留言 ID
      * @return \Illuminate\Http\Response
      */
     public function getOne($id)
     {
-        // 將存入 $data 的值插入，新增使用者
+        // 搜尋指定留言 ID 是否存在
         $comments = Comment::find($id);
         if (is_null($comments)) {
             $httpStatus = Response::HTTP_NOT_FOUND;
@@ -59,7 +56,7 @@ class CommentController extends Controller
                 $httpStatus
             );
         }
-        $httpStatus = Response::HTTP_NOT_FOUND;
+        $httpStatus = Response::HTTP_OK;
         $reposeData = [
             'statusCode' => $httpStatus,
             'message' => '單一留言搜尋成功',
@@ -82,13 +79,13 @@ class CommentController extends Controller
         // 為了合併系統自動安排的值，先將之前的 request 值存在 $data 內
         $data = $request->all();
 
-        // 將存入 $data 的值插入，新增使用者
+        // 將存入 $data 的值插入，創建新留言
         $comment = Comment::create($data);
 
         $httpStatus = Response::HTTP_OK;
         $reposeData = [
             'statusCode' => $httpStatus,
-            'message' => '創建成功',
+            'message' => '創建留言成功',
             'commentData' => $comment
         ];
 
@@ -135,7 +132,7 @@ class CommentController extends Controller
         $httpStatus = Response::HTTP_OK;
         $reposeData = [
             'statusCode' => $httpStatus,
-            'message' => '創建成功',
+            'message' => '修改成功',
             'commentData' => $comment,
         ];
 
@@ -147,7 +144,7 @@ class CommentController extends Controller
     /**
      * 刪除留言-軟刪除
      *
-     * @param  Request  $request
+     * @param  int  $id 留言 ID
      * @return \Illuminate\Http\Response
      */
     public function deleteComment($id)

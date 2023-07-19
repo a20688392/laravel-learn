@@ -4,10 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\User\UserLogin;
 use App\Http\Requests\User\UserRegister;
-use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpFoundation\Response;
 
 class UserController extends Controller
