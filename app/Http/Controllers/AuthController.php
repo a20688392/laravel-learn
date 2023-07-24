@@ -7,9 +7,20 @@ use App\Http\Requests\User\UserRegister;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Symfony\Component\HttpFoundation\Response;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends Controller
 {
+    /**
+     * Create a new AuthController instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('jwt.auth', ['except' => ['login', 'register']]);
+    }
+
     /**
      * 使用者註冊
      *
@@ -18,8 +29,8 @@ class AuthController extends Controller
      */
     public function register(UserRegister $request)
     {
-        // 為了合併系統自動安排的值，先將之前的 request 值存在 $data 內
-        $data = $request->all();
+        // 設定白名單，排除非需要的欄位
+        $data = $request->only('name', 'email', 'password');
         // 預設值插入
         $data['password'] = Hash::make($data['password']);
 
@@ -46,13 +57,13 @@ class AuthController extends Controller
      */
     public function login(UserLogin $request)
     {
-        $attempt =  User::where('email', $request->email)->first();
-        if ($attempt && Hash::check($request->password, $attempt->password)) {
+        $credentials = $request->only('email', 'password');
+        if ($token = JWTAuth::attempt($credentials)) {
             $httpStatus = Response::HTTP_OK;
             $reposeData = [
                 'statusCode' => $httpStatus,
                 'message' => '登入成功',
-                "name" => $attempt->name
+                'accessToken' => $token
             ];
         } else {
             $httpStatus = Response::HTTP_UNAUTHORIZED;
@@ -69,5 +80,52 @@ class AuthController extends Controller
             $reposeData,
             $httpStatus
         );
+    }
+    /**
+     * Log the user out (Invalidate the token).
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function logout()
+    {
+        JWTAuth::parseToken()->invalidate();
+        $httpStatus = Response::HTTP_OK;
+        $data = [
+            'statusCode' => $httpStatus,
+            'message' => 'Successfully logged out'
+        ];
+        return response()->json(
+            $data,
+            $httpStatus
+        );
+    }
+
+    /**
+     * Refresh a token.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function refresh()
+    {
+        $httpStatus = Response::HTTP_OK;
+        $data = [
+            'statusCode' => $httpStatus,
+            'message' => 'Refresh Token',
+            'accessToken' => JWTAuth::parseToken()->refresh()
+        ];
+        return response()->json(
+            $data,
+            $httpStatus
+        );
+    }
+
+    /**
+     * Get the authenticated User.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function me()
+    {
+        return response()->json(auth('api')->user());
     }
 }
