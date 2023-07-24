@@ -8,3 +8,6 @@
 
 ## Laravel Route
 [API 路由](/route.md)
+
+## FormRequest
+[輸入驗證](/formRequest.md)
