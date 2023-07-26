@@ -126,6 +126,18 @@ class AuthController extends Controller
      */
     public function me()
     {
-        return response()->json(auth('api')->user());
+        $httpStatus = Response::HTTP_OK;
+        $user = auth('api')->user();
+        $comments = User::find($user->id)->comments;
+        $data = [
+            'statusCode' => $httpStatus,
+            'user' => $user,
+            'comments' => $comments
+        ];
+
+        return response()->json(
+            $data,
+            $httpStatus
+        );
     }
 }

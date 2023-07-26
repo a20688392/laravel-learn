@@ -10,6 +10,15 @@ use Symfony\Component\HttpFoundation\Response;
 class CommentController extends Controller
 {
     /**
+     * Create a new AuthController instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('jwt.verified', ['except' => ['getAll', 'getOne']]);
+    }
+    /**
      * 獲取所有留言
      *
      * @return \Illuminate\Http\Response
@@ -23,7 +32,7 @@ class CommentController extends Controller
         $reposeData = [
             'statusCode' => $httpStatus,
             'message' => '獲取所有留言成功',
-            'allComments' => $comments
+            'comments' => $comments
         ];
 
         return response()->json(
@@ -40,8 +49,8 @@ class CommentController extends Controller
     public function getOne($id)
     {
         // 搜尋指定留言 ID 是否存在
-        $comments = Comment::find($id);
-        if (is_null($comments)) {
+        $comment = Comment::find($id);
+        if ($comment == null) {
             $httpStatus = Response::HTTP_NOT_FOUND;
             $repose_data = [
                 'statusCode' => $httpStatus,
@@ -60,7 +69,7 @@ class CommentController extends Controller
         $reposeData = [
             'statusCode' => $httpStatus,
             'message' => '單一留言搜尋成功',
-            'userData' => $comments
+            'comment' => $comment
         ];
 
         return response()->json(
@@ -78,6 +87,7 @@ class CommentController extends Controller
     {
         // 為了合併系統自動安排的值，先將之前的 request 值存在 $data 內
         $data = $request->all();
+        $data['user_id'] = auth('api')->id();
 
         // 將存入 $data 的值插入，創建新留言
         $comment = Comment::create($data);
@@ -111,6 +121,23 @@ class CommentController extends Controller
                 'errors' => [
                     "comment" => [
                         '查無此留言'
+                    ]
+                ]
+            ];
+
+            return response()->json(
+                $repose_data,
+                $httpStatus
+            );
+        }
+        if ($comment->user_id != auth('api')->id()) {
+            $httpStatus = Response::HTTP_FORBIDDEN;
+            $repose_data = [
+                'statusCode' => $httpStatus,
+                'message' => '更改失敗',
+                'errors' => [
+                    "comment" => [
+                        '非本人'
                     ]
                 ]
             ];
@@ -167,7 +194,7 @@ class CommentController extends Controller
             );
         }
         $comment = Comment::find($id);
-        if (is_null($comment)) {
+        if ($comment == null) {
             $httpStatus = Response::HTTP_NOT_FOUND;
             $repose_data = [
                 'statusCode' => $httpStatus,
@@ -175,6 +202,23 @@ class CommentController extends Controller
                 'errors' => [
                     "comment" => [
                         '查無此留言'
+                    ]
+                ]
+            ];
+
+            return response()->json(
+                $repose_data,
+                $httpStatus
+            );
+        }
+        if ($comment->user_id != auth('api')->id()) {
+            $httpStatus = Response::HTTP_FORBIDDEN;
+            $repose_data = [
+                'statusCode' => $httpStatus,
+                'message' => '更改失敗',
+                'errors' => [
+                    "comment" => [
+                        '非本人'
                     ]
                 ]
             ];
