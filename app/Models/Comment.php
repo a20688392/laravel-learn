@@ -20,7 +20,8 @@ class Comment extends Model
      */
     protected $fillable = [
         'title',
-        'description'
+        'description',
+        'user_id'
     ];
 
     /**
@@ -42,4 +43,12 @@ class Comment extends Model
         'created_at' => 'datetime:Y-m-d H:i:s',
         'updated_at' => 'datetime:Y-m-d H:i:s',
     ];
+
+    /**
+     * Get the user that owns the comments.
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }
