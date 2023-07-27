@@ -31,7 +31,6 @@ class CommentController extends Controller
         $httpStatus = Response::HTTP_OK;
         $reposeData = [
             'statusCode' => $httpStatus,
-            'message' => '獲取所有留言成功',
             'comments' => $comments
         ];
 
@@ -54,7 +53,6 @@ class CommentController extends Controller
             $httpStatus = Response::HTTP_NOT_FOUND;
             $repose_data = [
                 'statusCode' => $httpStatus,
-                'message' => '取得失敗',
                 'errors' => [
                     "comment" => '單一留言搜尋失敗'
                 ]
@@ -68,7 +66,6 @@ class CommentController extends Controller
         $httpStatus = Response::HTTP_OK;
         $reposeData = [
             'statusCode' => $httpStatus,
-            'message' => '單一留言搜尋成功',
             'comment' => $comment
         ];
 
@@ -95,7 +92,6 @@ class CommentController extends Controller
         $httpStatus = Response::HTTP_OK;
         $reposeData = [
             'statusCode' => $httpStatus,
-            'message' => '創建留言成功',
             'commentData' => $comment
         ];
 
@@ -117,7 +113,6 @@ class CommentController extends Controller
             $httpStatus = Response::HTTP_NOT_FOUND;
             $repose_data = [
                 'statusCode' => $httpStatus,
-                'message' => '取得失敗',
                 'errors' => [
                     "comment" => [
                         '查無此留言'
@@ -134,7 +129,6 @@ class CommentController extends Controller
             $httpStatus = Response::HTTP_FORBIDDEN;
             $repose_data = [
                 'statusCode' => $httpStatus,
-                'message' => '更改失敗',
                 'errors' => [
                     "comment" => [
                         '非本人'
@@ -159,7 +153,6 @@ class CommentController extends Controller
         $httpStatus = Response::HTTP_OK;
         $reposeData = [
             'statusCode' => $httpStatus,
-            'message' => '修改成功',
             'commentData' => $comment,
         ];
 
@@ -180,7 +173,6 @@ class CommentController extends Controller
             $httpStatus = Response::HTTP_BAD_REQUEST;
             $repose_data = [
                 'statusCode' => $httpStatus,
-                'message' => '取得失敗',
                 'errors' => [
                     "id" => [
                         'id 是數字'
@@ -198,7 +190,6 @@ class CommentController extends Controller
             $httpStatus = Response::HTTP_NOT_FOUND;
             $repose_data = [
                 'statusCode' => $httpStatus,
-                'message' => '取得失敗',
                 'errors' => [
                     "comment" => [
                         '查無此留言'
@@ -215,7 +206,6 @@ class CommentController extends Controller
             $httpStatus = Response::HTTP_FORBIDDEN;
             $repose_data = [
                 'statusCode' => $httpStatus,
-                'message' => '更改失敗',
                 'errors' => [
                     "comment" => [
                         '非本人'
@@ -233,7 +223,6 @@ class CommentController extends Controller
         $httpStatus = Response::HTTP_OK;
         $reposeData = [
             'statusCode' => $httpStatus,
-            'message' => '刪除成功',
             'commentData' => $comment,
         ];
 

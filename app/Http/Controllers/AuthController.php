@@ -37,10 +37,9 @@ class AuthController extends Controller
         // 將存入 $data 的值插入，新增使用者
         $user = User::create($data);
 
-        $httpStatus = Response::HTTP_OK;
+        $httpStatus = Response::HTTP_CREATED;
         $reposeData = [
             'statusCode' => $httpStatus,
-            'message' => '創建成功',
             'userData' => $user
         ];
 
@@ -62,14 +61,12 @@ class AuthController extends Controller
             $httpStatus = Response::HTTP_OK;
             $reposeData = [
                 'statusCode' => $httpStatus,
-                'message' => '登入成功',
                 'accessToken' => $token
             ];
         } else {
             $httpStatus = Response::HTTP_UNAUTHORIZED;
             $reposeData = [
                 'statusCode' => $httpStatus,
-                'message' => '登入失敗',
                 "errors" => [
                     "auth" => "帳號或密碼錯誤"
                 ]
@@ -110,7 +107,6 @@ class AuthController extends Controller
         $httpStatus = Response::HTTP_OK;
         $data = [
             'statusCode' => $httpStatus,
-            'message' => 'Refresh Token',
             'accessToken' => JWTAuth::parseToken()->refresh()
         ];
         return response()->json(
