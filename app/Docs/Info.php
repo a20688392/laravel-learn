@@ -11,6 +11,11 @@ namespace App\Docs;
  * @OA\PathItem(
  *     path="/"
  * )
+ * @OA\SecurityScheme(
+ *     securityScheme="bearerAuth",
+ *     type="http",
+ *     scheme="bearer"
+ * )
  */
 class Info
 {
