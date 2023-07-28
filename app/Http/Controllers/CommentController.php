@@ -92,7 +92,7 @@ class CommentController extends Controller
         $httpStatus = Response::HTTP_OK;
         $reposeData = [
             'statusCode' => $httpStatus,
-            'commentData' => $comment
+            'comment' => $comment
         ];
 
         return response()->json(
@@ -153,7 +153,7 @@ class CommentController extends Controller
         $httpStatus = Response::HTTP_OK;
         $reposeData = [
             'statusCode' => $httpStatus,
-            'commentData' => $comment,
+            'message' => 'Successfully updated ID ' . $id
         ];
 
         return response()->json(
@@ -223,7 +223,7 @@ class CommentController extends Controller
         $httpStatus = Response::HTTP_OK;
         $reposeData = [
             'statusCode' => $httpStatus,
-            'commentData' => $comment,
+            'message' => 'Successfully deleted ID ' . $id
         ];
 
         return response()->json(
