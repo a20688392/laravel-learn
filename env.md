@@ -93,3 +93,38 @@ config/app.php
 預設為 http://localhost
 為此服務預設的網頁根目錄
 ```
+
+5. 產生 JWT 的密鑰 以及配置設定
+```php
+php artisan jwt:secret
+# 會問你要不要覆蓋，yes
+# 剩餘設定皆是預設，為比較有用的設定
+# 請到 config\jwt.php 查看說明細節
+```
+![image](docs/jwt-setting.png)
+
+6. 產生 swagger 以及配置設定
+```php
+php artisan l5-swagger:generate
+# 產生 swagger 文檔
+
+L5_SWAGGER_CONST_HOST=http://{domain or ip}/{path}/public
+# 這個是範例
+# L5_SWAGGER_CONST_HOST=http://localhost/laravel-learn/public
+# 剩餘設定皆是預設，為比較有用的設定
+# 請到 config\l5-swagger.php 查看說明細節
+
+L5_FORMAT_TO_USE_FOR_DOCS=json
+# 預設顯示格式，json or yaml
+# 但要使用 yaml，L5_SWAGGER_GENERATE_YAML_COPY 必須為 true
+L5_SWAGGER_GENERATE_ALWAYS=false
+# true，即不用一直下 php artisan l5-swagger:generate 就會更新文檔
+L5_SWAGGER_GENERATE_YAML_COPY=false
+# true，即會產生 yaml 格式
+L5_SWAGGER_UI_DOC_EXPANSION=none
+# 預設為none，進入文檔首頁顯示方式
+# 'list' (expands only the tags),
+# 'full' (expands the tags and operations),
+# 'none' (expands nothing).
+```
+![Alt text](docs/swagger-setting.png)
