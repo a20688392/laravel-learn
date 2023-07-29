@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Comment\CommentCreate;
+use App\Http\Requests\Comment\CommentGetAll;
 use App\Http\Requests\Comment\CommentUpdate;
 use App\Models\Comment;
+use Carbon\Carbon;
 use Symfony\Component\HttpFoundation\Response;
 
 class CommentController extends Controller
@@ -21,13 +23,25 @@ class CommentController extends Controller
     /**
      * 獲取所有留言
      *
-     * @return \Illuminate\Http\Response
+     * @param \App\Http\Requests\Comment\CommentGetAll $request
+     * @return \Illuminate\Http\JsonResponse|mixed
      */
-    public function getAll()
+    public function getAll(CommentGetAll $request)
     {
-        // 將存入 $data 的值插入，新增使用者
-        $comments = Comment::all();
-
+        if ($request->query()) {
+            $keyword = $request->query('keyword', '');
+            $startTime = $request->query('startTime', '2020-06-27 00:00:00');
+            $endTime = $request->query('endTime', Carbon::now()->toDateTimeString());
+            $comments =
+                Comment::whereBetween('created_at', [$startTime, $endTime])
+                ->where(function ($query) use ($keyword) {
+                    $query->where('title', 'LIKE', '%' . $keyword . '%')
+                        ->orWhere('description', 'LIKE', '%' . $keyword . '%');
+                })
+                ->get();
+        } else {
+            $comments = Comment::all();
+        }
         $httpStatus = Response::HTTP_OK;
         $reposeData = [
             'statusCode' => $httpStatus,
@@ -77,8 +91,8 @@ class CommentController extends Controller
     /**
      * 創建新留言
      *
-     * @param  CommentCreate  $request
-     * @return \Illuminate\Http\Response
+     * @param \App\Http\Requests\Comment\CommentCreate $request
+     * @return \Illuminate\Http\JsonResponse|mixed
      */
     public function createComment(CommentCreate $request)
     {
@@ -103,8 +117,9 @@ class CommentController extends Controller
     /**
      * 更新留言
      *
-     * @param  CommentUpdate  $request
-     * @return \Illuminate\Http\Response
+     * @param \App\Http\Requests\Comment\CommentUpdate $request
+     * @param int $id 留言 ID
+     * @return \Illuminate\Http\JsonResponse|mixed
      */
     public function updateComment(CommentUpdate $request, $id)
     {
@@ -164,8 +179,8 @@ class CommentController extends Controller
     /**
      * 刪除留言-軟刪除
      *
-     * @param  int  $id 留言 ID
-     * @return \Illuminate\Http\Response
+     * @param int $id 留言 ID
+     * @return \Illuminate\Http\JsonResponse|mixed
      */
     public function deleteComment($id)
     {
