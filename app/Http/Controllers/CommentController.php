@@ -103,7 +103,7 @@ class CommentController extends Controller
         // 將存入 $data 的值插入，創建新留言
         $comment = Comment::create($data);
 
-        $httpStatus = Response::HTTP_OK;
+        $httpStatus = Response::HTTP_CREATED;
         $reposeData = [
             'statusCode' => $httpStatus,
             'comment' => $comment

@@ -44,6 +44,11 @@ namespace App\Docs\Comment;
  *              },
  *          ),
  *      ),
+ *      @OA\Response(
+ *        response=401,
+ *        description="身分驗證未通過",
+ *        @OA\JsonContent(ref="#/components/schemas/Unauthorized")
+ *      )
  *  )
  */
 class Delete

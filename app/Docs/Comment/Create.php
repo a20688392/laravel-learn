@@ -35,7 +35,7 @@ namespace App\Docs\Comment;
  *          ),
  *      ),
  *      @OA\Response(
- *          response="200",
+ *          response="201",
  *          description="創建留言成功",
  *          @OA\JsonContent(
  *             @OA\Property(
@@ -62,6 +62,11 @@ namespace App\Docs\Comment;
  *              },
  *          ),
  *      ),
+ *      @OA\Response(
+ *        response=401,
+ *        description="身分驗證未通過",
+ *        @OA\JsonContent(ref="#/components/schemas/Unauthorized")
+ *      )
  *  )
  */
 class Create

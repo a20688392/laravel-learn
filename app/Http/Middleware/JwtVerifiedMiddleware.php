@@ -45,7 +45,7 @@ class JwtVerifiedMiddleware extends BaseMiddleware
             $httpStatus = Response::HTTP_UNAUTHORIZED;
             $response = [
                 "statusCode" => $httpStatus,
-                'error' => 'token_absent'
+                'error' => 'Unauthorized'
             ];
             return response()->json($response, $httpStatus);
         }
