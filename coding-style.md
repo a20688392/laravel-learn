@@ -25,6 +25,13 @@ npm install @commitlint/cli @commitlint/config-conventional  --save-dev
 ```bash=
 npx husky install
 ```
+#### 使初始化安裝時自動啟動掛勾
+```
+"scripts": {
+        //
+        "prepare": "husky install"
+    },
+```
 
 ### git hook
 可以參考文章~ 關於 [git hook](https://git-scm.com/book/zh/v2/%E8%87%AA%E5%AE%9A%E4%B9%89-Git-Git-%E9%92%A9%E5%AD%90)
