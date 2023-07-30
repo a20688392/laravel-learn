@@ -22,24 +22,12 @@ php artisan key:generate
 
 ![image](/docs/app-key.png)
 
-3. 設定資料庫資訊
+#### 3. 設定資料庫資訊
 
 ![image](/docs/database.png)
 
-4. 設定時區
->不更改的話是寫死的，輸出的時間都將會是UTC，台灣是Asia/Taipei (UTC+8)
-
-> 於 config/app.php
-
-> 找到 timezone ，將原本的改成
-
-> 'timezone' => env('APP_TIMEZONE', 'UTC'),
-
-> 將它取代成使用環境變數，沒有的情況預設 UTC
-
-![image](/docs/timezone.png)
-
-> 記得 .env 和 .env.example 都要加上
+#### 4. 設定時區
+>台灣是Asia/Taipei (UTC+8)
 
 ![image](/docs/env-example-timezone.png)
 ![image](/docs/env-timezone.png)
@@ -94,7 +82,7 @@ config/app.php
 為此服務預設的網頁根目錄
 ```
 
-5. 產生 JWT 的密鑰 以及配置設定
+#### 5. 產生 JWT 的密鑰 以及配置設定
 ```php
 php artisan jwt:secret
 # 會問你要不要覆蓋，yes
@@ -103,7 +91,7 @@ php artisan jwt:secret
 ```
 ![image](docs/jwt-setting.png)
 
-6. 產生 swagger 以及配置設定
+#### 6. 產生 swagger 以及配置設定
 ```php
 php artisan l5-swagger:generate
 # 產生 swagger 文檔
@@ -128,3 +116,41 @@ L5_SWAGGER_UI_DOC_EXPANSION=none
 # 'none' (expands nothing).
 ```
 ![Alt text](docs/swagger-setting.png)
+
+加入 git 不追蹤
+```bash
+# .gitignore 加入
+/storage/api-docs
+```
+
+打開網頁
+```bash
+http://{domain or ip}/{path}/public/api/documentation
+# 路徑是 config\l5-swagger.php 設定的
+```
+成功啟動會呈現這樣
+![Alt text](docs/swagger_success.png)
+
+### 開發者幫助工具
+#### 如需更多得配置細節可以看下面這篇文章
+[Laravel 超好用代码提示工具 Laravel IDE Helper](https://learnku.com/articles/10172/laravel-super-good-code-prompt-tool-laravel-ide-helper)
+#### 產生套件提示
+```
+php artisan ide-helper:generate
+```
+加入 git 不追蹤
+```bash
+# .gitignore 加入
+/_ide_helper.php
+```
+#### 產生Model 資料庫操作提示
+```bash
+php artisan ide-helper:models
+# 要選 no ，_ide_helper_models.php 他會產生提示
+# 選 yes，會注入註解到 model，不需要麼做
+```
+加入 git 不追蹤
+```bash
+# .gitignore 加入
+/_ide_helper_models.php
+```
