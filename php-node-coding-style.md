@@ -91,14 +91,24 @@ composer require "squizlabs/php_codesniffer=*" --dev
   // 檢查為 PSR12 (--standard=psr12)
   // 顯示進度 (-p)
   // 設定檢查範圍 (app/ config/ routes/ tests/)
+  // 確定是誰向 Git 存儲庫提交了每個錯誤和警告 (--report)
   "lint": [
     "phpcs --standard=psr12 -p app/ config/ routes/ tests/"
   ],
   "lint:save": [
     "phpcbf --standard=psr12 -p app/ config/ routes/ tests/"
+  ],
+  "lint:report": [
+    "phpcs --standard=psr12 -p -s --report=gitblame app/ config/ routes/ tests/"
   ]
 }
 ```
+
+#### 依據規定找出錯誤
+![image](/docs/lint-error.png)
+
+#### 依據規定找出各開發者的錯誤
+![image](/docs/ci-report.png)
 
 ### lint-staged 只會處理 git staged 中的程式碼
 #### 新增在 git commit 前檢查並修理
@@ -123,8 +133,5 @@ npx husky add .husky/pre-commit "npx lint-staged"
   }
 }
 ```
-#### 依據規定找出錯誤
-![image](/docs/lint-error.png)
 
-#### 依據規定找出各開發者的錯誤
-![image](/docs/ci-report.png)
+
