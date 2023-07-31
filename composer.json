@@ -55,7 +55,8 @@
         ],
         "post-install-cmd": [
             "phpcs --config-set colors 1",
-            "phpcs --config-set default_standard PSR12"
+            "phpcs --config-set default_standard PSR12",
+            "git config core.hooksPath .githooks"
         ],
         "lint": [
             "phpcs --standard=psr12 -p app/ config/ routes/ tests/"
