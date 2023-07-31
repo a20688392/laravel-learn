@@ -1,0 +1,52 @@
+#!/bin/bash
+
+# Function to check if a file is in the Git staged area
+function is_staged {
+    git diff --cached --name-only | grep -q "$1"
+}
+
+# Function to run PHP_CodeSniffer on the staged files
+function run_phpcs_on_staged {
+    vendor/bin/phpcs --standard=psr12 -p $@
+}
+
+# Function to check if PHP_CodeSniffer reported any errors
+function phpcs_has_errors {
+    if [[ -n $(run_phpcs_on_staged "$@") ]]; then
+        return 0 # Has errors
+    else
+        return 1 # No errors
+    fi
+}
+
+# Function to display errors and abort commit
+function display_errors_and_abort {
+    echo "PHP_CodeSniffer found errors. Please fix them before committing."
+    run_phpcs_on_staged "$@" # Rerun PHP_CodeSniffer to display full error output
+    exit 1 # Exit with non-zero status code to prevent the commit
+}
+
+# Directories to scan
+DIRECTORIES_TO_SCAN=("app" "config" "routes" "tests")
+
+# Process the staged code
+function process_staged_code {
+    # Check each directory in DIRECTORIES_TO_SCAN
+    for dir in "${DIRECTORIES_TO_SCAN[@]}"; do
+        if is_staged "$dir"; then
+            # Get the files in the staged directory
+            staged_files=$(git diff --cached --name-only --diff-filter=ACM "$dir")
+
+            # Run PHP_CodeSniffer on the staged files and check for errors
+            if phpcs_has_errors "$staged_files"; then
+                display_errors_and_abort "$staged_files"
+            fi
+        fi
+    done
+}
+
+# Call the function to process staged code
+process_staged_code
+
+# If no errors found, allow the commit to proceed
+exit 0
