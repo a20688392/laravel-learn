@@ -12,7 +12,7 @@ function run_phpcs_on_staged {
 
 # Function to check if PHP_CodeSniffer reported any errors
 function phpcs_has_errors {
-    if [[ -n $(run_phpcs_on_staged "$@") ]]; then
+    if run_phpcs_on_staged "$@" | grep -q "ERROR"; then
         return 0 # Has errors
     else
         return 1 # No errors
